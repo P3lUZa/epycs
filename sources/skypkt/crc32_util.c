@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 ////////////////////////////////
@@ -158,74 +159,31 @@ unsigned int Calculate_CRC32(char *crc32, int bytes) {
 ///////////////////////////////////////////////////////////////////////////
 int Calculate_CRC32_For41(char *data, int len)
 {
-  unsigned int eax; // eax@1
-  unsigned int ebx;
-  unsigned int esi;
-  unsigned int edi;
-  unsigned int ecx;
-  unsigned int my_this=0;
-  char *bin;
 
-  eax=len;
-  esi=my_this;
+  unsigned short ret = 0;
+  unsigned short current, tmp;
 
-  ecx=eax;//len
-
-  eax--;
-
-  if ( ecx )
+  while (len > 0)
   {
-	edi=eax+1;
-    do
-    {
+	  current = data[0] & 0xFF;
 
+	  current = current ^ (ret >> 8);
 
-      eax=esi & 0xffff;
-	  ebx=0;
-	  
-	  //printf("\nNEW eax=0x%08X\n",eax);
-	  
-	  ebx=data[0] & 0xff;
+	  tmp = word_9A8844[current*2+1];
+	  tmp &= 0xff;
+	  tmp = tmp << 8;
 
-	  //printf("ebx=0x%08X\n",ebx);
+	  tmp += word_9A8844[current*2] & 0xFF;
 
-	  ecx=eax;
-	  ecx=ecx & 0xffff;
-	  ecx=ecx >> 8;
-
-	  //printf("ecx=0x%08X\n",ecx);
-
-	  ecx=ecx ^ ebx;
-
-	  //printf("ecx=0x%08X\n",ecx);
-
-	  ebx=0;
-
-	  //mov bh,al
-	  ebx=(eax & 0xff) * 0x100;
-
-	  //printf("ebx=0x%08X\n",ebx);
-
-	  eax=(word_9A8844[ecx*2+1] & 0xff) * 0x100 + (word_9A8844[ecx*2] & 0xff);
-
-	  //printf("table eax=0x%08X\n",eax);
-
-	  eax= (eax & 0xffff) ^ (ebx & 0xffff);
-
-	  //printf("eax=0x%08X\n",eax);
+	  ret <<= 8;
+	  ret = ret ^ tmp;
 
 	  data++;
-	  edi--;
-	  esi=eax & 0xffff;
+	  len --;
 
-	  //printf("esi=0x%08X\n",esi);
-
-	  //exit(1);
-    }
-    while ( edi );
   }
 
-  return eax;
+  return ret;
 }
 
 

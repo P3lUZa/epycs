@@ -1,11 +1,10 @@
-
                        Epycs - Reverse engineered Skype
 
                                .:: Readme ::.
 
 Some restrictions:
 
-1) Its only work for once message.
+1) It only works for once message.
 After it, you need empty you 
 "%%appdata%%/skype/<skypename>"
 directory or use another credentials.
